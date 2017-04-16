@@ -6,9 +6,10 @@ from .base import BaseItertool
 
 @six.add_metaclass(ABCMeta)
 class BaseFilter(BaseItertool):
-    def __init__(self, pred, seq):
+    def __init__(self, pred, seq, **kwargs):
         self._predicate = pred
         self._iter = iter_(seq)
+        self._predicate_args = kwargs
 
     @abstractmethod
     def __next__(self):
@@ -25,7 +26,7 @@ class ifilter(BaseFilter):
 
     def _keep(self, value):
         predicate = bool if self._predicate is None else self._predicate
-        return predicate(value)
+        return predicate(value, self._predicate_args)
 
     def __next__(self):
         val = next(self._iter)
